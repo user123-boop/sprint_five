@@ -28,12 +28,20 @@ type Training struct {
 // количество_повторов * длина_шага / м_в_км
 func (t Training) distance() float64 {
 	// вставьте ваш код ниже
+	if MInKm == 0 {
+		fmt.Println("Ошибка: деление на ноль!")
+		return 0
+	}
 	return (float64(t.Action) * t.LenStep) / MInKm
 }
 
 // meanSpeed возвращает среднюю скорость бега или ходьбы.
 func (t Training) meanSpeed() float64 {
 	// вставьте ваш код ниже
+	if t.Duration.Hours() == 0 {
+		fmt.Println("Ошибка: деление на ноль!")
+		return 0
+	}
 	return (t.distance() / float64(t.Duration.Hours()))
 }
 
@@ -102,8 +110,11 @@ type Running struct {
 // Это переопределенный метод Calories() из Training.
 func (r Running) Calories() float64 {
 	// вставьте ваш код ниже
-	//var floatVar float64 = CaloriesMeanSpeedMultiplier
-	return ((CaloriesMeanSpeedMultiplier*r.meanSpeed() + CaloriesMeanSpeedShift) * r.Weight / MInKm * r.Duration.Hours() * MinInHours)
+	if MInKm == 0 || r.Duration.Hours() == 0 || MinInHours == 0 {
+		fmt.Println("Ошибка: деление на ноль!")
+		return 0
+	}
+	return ((CaloriesMeanSpeedMultiplier*r.meanSpeed() + CaloriesMeanSpeedShift) * r.Weight / (MInKm * r.Duration.Hours() * MinInHours))
 }
 
 // TrainingInfo возвращает структуру InfoMessage с информацией о проведенной тренировке.
@@ -134,6 +145,10 @@ type Walking struct {
 // Это переопределенный метод Calories() из Training.
 func (w Walking) Calories() float64 {
 	// вставьте ваш код ниже
+	if w.Height == 0 {
+		fmt.Println("Ошибка: деление на ноль!")
+		return 0
+	}
 	return ((CaloriesWeightMultiplier*w.Weight + (math.Pow(w.meanSpeed(), 2)/w.Height)*CaloriesSpeedHeightMultiplier*w.Weight) * float64(w.Duration.Hours()) * MinInHours)
 }
 
@@ -165,6 +180,10 @@ type Swimming struct {
 // Это переопределенный метод Calories() из Training.
 func (s Swimming) meanSpeed() float64 {
 	// вставьте ваш код ниже
+	if MInKm == 0 || s.Duration.Hours() == 0 {
+		fmt.Println("Ошибка: деление на ноль!")
+		return 0
+	}
 	return (float64(s.LengthPool) * float64(s.CountPool) / MInKm / float64(s.Duration.Hours()))
 }
 
